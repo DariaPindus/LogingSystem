@@ -4,16 +4,13 @@ import com.daria.sprimg.mvc.filter.AuthFilter;
 import com.daria.sprimg.mvc.model.User;
 import com.daria.sprimg.mvc.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.*;
+import java.util.*;
 
 @Controller
 @SessionAttributes("user")
@@ -21,43 +18,39 @@ public class UserController {
 
     @Autowired
     UserService userService;
-
-/*
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public ModelAndView getLoginForm() {
-
-        ModelAndView model = new ModelAndView("Login");
-        model.addObject("user", new User());
-        return model;
-    }
-*/
-
-    @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public String getLoginForm(HttpServletRequest request, Model model){
+    public String getLoginForm(HttpServletRequest request, @CookieValue(value = "tkn", defaultValue = "0")String cookieValue,
+                               Model model){
         HttpSession session = request.getSession();
-        if (AuthFilter.getUserBySession(session) != null) {
-            User user = AuthFilter.getUserBySession(session);
-            model.addAttribute("user", user);
+        String userTknCookie = cookieValue;
+        System.out.println("Got cookie value in login : " + cookieValue);
+        User user = AuthFilter.getUserBySession(session);
+
+        if (!cookieValue.equals("0") && user!=null && userTknCookie.equals(user.getTkn())) {
+            //User user = AuthFilter.getUserBySession(session);
             session.setAttribute("user", user);
+            model.addAttribute("user", user);
             return "redirect:/service/success";
         }
+
         model.addAttribute("user", new User());
         return "Login";
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public String enter(@ModelAttribute("user") User user, HttpServletRequest req, Model model) {
+    public String enter(@ModelAttribute("user") User user,
+                        HttpServletRequest req, HttpServletResponse res, Model model) {
 
-        if (userService.isRegistered(user.getName())) {
-            User current = userService.getUserByLogin(user.getName());
-            System.out.println("returned user password = " + current.getPassword());
+        if (userService.isRegistered(user.getUserName())) {
+            User current = userService.getUserByLogin(user.getUserName());
+            //System.out.println("returned user password = " + current.getPassword());
             if (userService.checkPassword(current, user.getPassword())) {
-                System.out.println("inside second check:" + current.getName());
-                System.out.println("session: " + req.getSession());
+                System.out.println("user Tkn after validating form: " + current.getTkn());
+                Cookie cookie = new Cookie("tkn", current.getTkn());
+                cookie.setMaxAge(2*60);
+                res.addCookie(cookie);
                 AuthFilter.addUser(req.getSession(), current);
-                req.getSession().setAttribute("user", user);
-                model.addAttribute("msg", user.getName());
-                //attr.addFlashAttribute("msg", user.getName());
+                model.addAttribute("msg", user.getUserName());
                 return "redirect:/service/success";
             }
         }
@@ -72,15 +65,16 @@ public class UserController {
     }
 
     @RequestMapping(value = "/service/success", method = RequestMethod.GET)
-    public String success(@ModelAttribute("user") User user, Model model) {
+    public String success(@ModelAttribute("user") User user, @CookieValue (value = "tkn", defaultValue = "0000") String cookieValue,
+                          HttpServletResponse res, Model model) {
         //model.addAttribute("user", user);
-        model.addAttribute("msg", user.getName());
-        return "Success";
-    }
+/*
+        ArrayList<String> colors = getColors();
+        model.addAttribute("colors", colors);*/
+        model.addAttribute("cookie", cookieValue);
+        model.addAttribute("msg", user.getUserName());
 
-    @RequestMapping(value = "/service/check")
-    public String check() {
-        return "New";
+        return "Success";
     }
 
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
@@ -89,7 +83,8 @@ public class UserController {
         User user = new User();
         user.setUserName(userName);
         user.setPassword(User.getShaHash(password));
-        if (userService.isRegistered(user.getName())) {
+        user.setTkn(setRandomString());
+        if (userService.isRegistered(user.getUserName())) {
             model.addAttribute("error", "Login is already registered");
             return "Registration";
         } else {
@@ -100,11 +95,52 @@ public class UserController {
         }
     }
 
+    protected ArrayList<String> getColors(){
+        ArrayList<String> colors = new ArrayList<String>();
+        colors.add("white");
+        colors.add("green");
+        colors.add("pink");
+        colors.add("blue");
+        return colors;
+    }
+
+    @RequestMapping(value = "/service/success", method = RequestMethod.POST)
+    public String success(@RequestParam(value = "color") String color, HttpServletResponse response){
+        response.addCookie(new Cookie("color", color));
+        return "redirect:/service/check";
+    }
+
+    @RequestMapping(value = "/service/check")
+    public String check(HttpServletRequest request, @CookieValue(value = "color")String color,
+                        @CookieValue(value = "userName") String name, Model model) {
+        model.addAttribute("name", name);
+        model.addAttribute("color", color);
+        return "New";
+    }
+
+
     @RequestMapping(value = "/logout")
-    public String logout(HttpSession session) {
+    public String logout(HttpSession session, HttpServletRequest request, HttpServletResponse response, SessionStatus status) {
         System.out.println("in /logout");
+        Cookie[] cookies = request.getCookies();
+        for (Cookie c:cookies) {
+            //c.setPath("/");
+            c.setMaxAge(0);
+            response.addCookie(c);
+        }
         session.invalidate();
-        //status.setComplete();
+        status.setComplete();
         return "redirect:/login";
+    }
+
+    public String setRandomString(){
+        Random r = new Random();
+        StringBuilder str = new StringBuilder();
+        for (int i = 0; i < 60; i++) {
+            int p = 32 + r.nextInt(90);
+            char c = (char) p;
+            str.append(c);
+        }
+        return str.toString();
     }
 }

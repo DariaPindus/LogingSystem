@@ -6,9 +6,9 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Success Form</title>
 </head>
-<body>
+<body bgcolor= ${color} >
 	<font color="green"><h2>Only registered can see.</h2></font>
-
+	<h3> Yout name in cookie: ${name} </h3>
 	<br><a href="/logout"> Logout </a></br>
 </body>
 </html>

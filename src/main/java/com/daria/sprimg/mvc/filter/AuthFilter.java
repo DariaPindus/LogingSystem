@@ -2,18 +2,15 @@ package com.daria.sprimg.mvc.filter;
 
 
 import com.daria.sprimg.mvc.model.User;
-import com.daria.sprimg.mvc.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @WebFilter(urlPatterns = "/jpa/service/*")
 public class AuthFilter implements Filter {
@@ -29,16 +26,24 @@ public class AuthFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
         HttpSession currentSession = request.getSession();
-    //    if (usersSessions.get(currentSession) != null) {
+        //if (usersSessions.get(currentSession) != null) {
         //User user = SessionStorage.getUserBySession(currentSession);
+        Cookie[] cookies = request.getCookies();
         User user = usersSessions.get(currentSession);
-        if (user!=null) {
-            System.out.println("in checking");
-            currentSession.setAttribute("user", user);
-            filterChain.doFilter(request, response);
-        } else {
-            response.sendRedirect("/login");
+
+        String userTkn = "";
+        for (Cookie c : cookies) {
+            if (c.getName().equals("tkn")) {
+                userTkn = c.getValue();
+                break;
+            }
         }
+        if (cookies.length !=0 && user!=null) {
+            currentSession.setAttribute("user", usersSessions.get(currentSession));
+            filterChain.doFilter(request, response);
+        }
+
+        response.sendRedirect("/login");
     }
 
     public void destroy() {
@@ -46,7 +51,7 @@ public class AuthFilter implements Filter {
     }
 
     public static void addUser(HttpSession session, User user) {
-        System.out.println("inside auth filter: " + session + "\n user: " + user.getName());
+        System.out.println("inside auth filter: " + session + "\n user: " + user.getUserName());
         usersSessions.put(session, user);
         for (Map.Entry<HttpSession, User> entry : usersSessions.entrySet()) {
             System.out.println("Show map after adding: ");
@@ -65,6 +70,9 @@ public class AuthFilter implements Filter {
         }
     }
 
+    /*public static User getUserByToken (String tkn) {
+    }
+    */
     public static boolean isUserInSession(HttpSession session) {
         return usersSessions.containsKey(session);
     }

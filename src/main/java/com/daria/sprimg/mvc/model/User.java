@@ -15,6 +15,8 @@ public class User {
     private int id;
     private String userName;
     private String password;
+    private String tkn;
+    private Address address;
 
     public int getId() {
         return id;
@@ -24,7 +26,7 @@ public class User {
         this.id = id;
     }
 
-    public String getName() {
+    public String getUserName() {
         return userName;
     }
 
@@ -38,6 +40,22 @@ public class User {
 
     public void setPassword(String password) {
         this.password = User.getShaHash(password);
+    }
+
+    public String getTkn() {
+        return tkn;
+    }
+
+    public void setTkn(String tkn) {
+        this.tkn = tkn;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
     /**
@@ -63,32 +81,5 @@ public class User {
             }
         }
         return null;
-        /*
-        if (!isEmptyAny(string))
-        {
-            StringBuilder sb = new StringBuilder();
-            try
-            {
-                MessageDigest md = MessageDigest.getInstance("SHA-256");
-                md.update(string.getBytes());
-
-
-                byte byteData[] = md.digest();
-
-
-//convert the byte to hex format method 1
-                for (int i = 0; i < byteData.length; i++)
-                {
-                    sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
-                }
-            }
-            catch (NoSuchAlgorithmException e)
-            {
-                log.error("", e);
-            }
-            return sb.toString();
-        }
-        return null;
-*/
     }
 }
