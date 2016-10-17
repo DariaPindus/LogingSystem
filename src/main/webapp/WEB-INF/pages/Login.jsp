@@ -4,7 +4,7 @@
 
 <body>
     <h1>Please Login</h1>
-        <form:form method="post" action="/login" modelAttribute="user">
+        <form method="post" action="/login" modelAttribute="user">
         <table>
         <tr>
         	<td><p>Login: </td>
@@ -20,8 +20,9 @@
             <td><input type="submit" value="Log In"></td>
             <td><a href="/registration"> Register </a></td>
             <td><a href="/service/check">Check</a></td>
+            <td><a href="/users">View all users</a></td>
         </tr>
-        </form:form>
+        </form>
 
 
 </body>

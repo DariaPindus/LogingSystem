@@ -22,14 +22,25 @@ public class UserService {
     }
 
     public boolean checkPassword(User found, String entered) {
-        return found.getPassword().equals(User.getShaHash(entered));
+        return found.getPassword().equals(entered);
     }
 
+    public List<User> getUsersByCity(String city) {
+        return userRepository.getUsersByCity(city);
+    }
     public User getUserByLogin(String login){
         return userRepository.getUserByLogin(login);
     }
 
     public void addUser(User user) {
         userRepository.addUser(user);
+    }
+
+    public void updateTokens(String newStr, String name){
+        userRepository.updateValues(newStr, name);
+    }
+
+    public void updateUser(User user) {
+        userRepository.updateUser(user);
     }
 }

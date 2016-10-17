@@ -1,13 +1,16 @@
 #surefire
-#Fri Oct 14 18:31:34 EEST 2016
+#Mon Oct 17 19:22:08 EEST 2016
 enableAssertions=true
 testSuiteDefinitionTestSourceDirectory=/home/daria_p/MyDocs/JavaProgs/Spring/LoginSys/src/test/java
+classPathUrl.36=/home/daria_p/.m2/repository/javax/validation/validation-api/1.1.0.Final/validation-api-1.1.0.Final.jar
+classPathUrl.35=/home/daria_p/.m2/repository/com/fasterxml/classmate/1.1.0/classmate-1.1.0.jar
+classPathUrl.34=/home/daria_p/.m2/repository/org/hibernate/hibernate-validator/5.2.4.Final/hibernate-validator-5.2.4.Final.jar
 classPathUrl.33=/home/daria_p/.m2/repository/jstl/jstl/1.2/jstl-1.2.jar
 classPathUrl.32=/home/daria_p/.m2/repository/mysql/mysql-connector-java/5.1.36/mysql-connector-java-5.1.36.jar
 surefireClassPathUrl.1=/home/daria_p/.m2/repository/org/apache/maven/surefire/surefire-api/2.10/surefire-api-2.10.jar
 classPathUrl.31=/home/daria_p/.m2/repository/org/hibernate/common/hibernate-commons-annotations/4.0.1.Final/hibernate-commons-annotations-4.0.1.Final.jar
-classPathUrl.30=/home/daria_p/.m2/repository/antlr/antlr/2.7.7/antlr-2.7.7.jar
 surefireClassPathUrl.0=/home/daria_p/.m2/repository/org/apache/maven/surefire/surefire-junit3/2.10/surefire-junit3-2.10.jar
+classPathUrl.30=/home/daria_p/.m2/repository/antlr/antlr/2.7.7/antlr-2.7.7.jar
 classPathUrl.9=/home/daria_p/.m2/repository/org/springframework/spring-web/4.3.3.RELEASE/spring-web-4.3.3.RELEASE.jar
 classPathUrl.8=/home/daria_p/.m2/repository/org/springframework/spring-expression/4.3.3.RELEASE/spring-expression-4.3.3.RELEASE.jar
 classPathUrl.7=/home/daria_p/.m2/repository/commons-logging/commons-logging/1.2/commons-logging-1.2.jar

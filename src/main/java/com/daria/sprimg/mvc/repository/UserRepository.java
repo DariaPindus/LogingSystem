@@ -30,8 +30,29 @@ public class UserRepository {
     }
 
     @Transactional
+    public List<User> getUsersByCity(String city) {
+        System.out.println("got in user repository");
+        Query query = entityManager.createQuery("select u from User u join u.address a where a.city=:ccity", User.class);
+        query.setParameter("ccity", city);
+        return query.getResultList();
+    }
+
+    @Transactional
+    public void updateUser(User user) {
+        entityManager.merge(user);
+        entityManager.flush();
+    }
+
+    @Transactional
     public void addUser(User user) {
         entityManager.persist(user);
         entityManager.flush();
+    }
+
+    public void updateValues(String newStr, String name) {
+        Query query = entityManager.createQuery("UPDATE User u SET u.tkn = :userTkn WHERE u.userName = :name");
+        query.setParameter("userTkn", newStr);
+        query.setParameter("name", name);
+        query.executeUpdate();
     }
 }

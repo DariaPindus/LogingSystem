@@ -1,9 +1,7 @@
 package com.daria.sprimg.mvc.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -13,9 +11,11 @@ public class User {
     @Id
     @GeneratedValue
     private int id;
+   // @Size(min = 2, max = 20, message = "name must be between 2 and 20 symbols")
     private String userName;
     private String password;
     private String tkn;
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Address address;
 
     public int getId() {
@@ -82,4 +82,5 @@ public class User {
         }
         return null;
     }
+
 }

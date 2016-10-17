@@ -6,9 +6,9 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.2.xsd">
-
+    <!--<mvc:annotation-driven />-->
     <context:component-scan base-package="com.daria.sprimg.mvc"/>
-  <!--  <mvc:annotation-driven /> -->
+
 
     <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="/WEB-INF/pages/"/>
@@ -45,6 +45,10 @@
         <property name="password" value="root"/>
     </bean>
 
-   <!-- <bean id="sessionStorage" class="com." -->
+    <bean id="messageSource"
+                class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="basename" value="messages" />
+    </bean>
+
 
 </beans>
