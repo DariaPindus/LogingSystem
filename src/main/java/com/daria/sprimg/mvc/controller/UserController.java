@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.*;
 import javax.validation.Valid;
@@ -65,7 +66,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/registration", method = RequestMethod.GET)
-    public String registration(Model model) {
+    public String registration(HttpSession session, Model model) {
         List<String> countries = countries();
         model.addAttribute("countryList", countries);
         model.addAttribute("user", new User());
@@ -74,20 +75,23 @@ public class UserController {
 
 
     @RequestMapping(value = "/registration", method = RequestMethod.POST)
-    public String register(@ModelAttribute(value = "user") User user, HttpServletRequest req, Model model) {
+    public String register(@ModelAttribute(value = "user") User user, RedirectAttributes redirectAttributes,
+                           HttpServletRequest req, Model model) {
         String error = "";
+
         if (user.getUserName().length() < 3 || user.getUserName().length() > 20) {
             error = "Login must be from 3 to 20 symbols";
-        } else if (user.getAddress().getCountry().length() ==0) {
-            error = "Country is rewuired field";
-        } else if (user.getAddress().getCity().length()==0) {
-            error = "City is required field";
+        } else if (user.getAddress().getBuilding().length() > 5) {
+            error = "Building number can't be tht long";
+        } else if (user.getAddress().getCountry().length() ==0 || user.getAddress().getCity().length()==0
+                || user.getAddress().getStreet().length() ==0 || user.getAddress().getBuilding().length() == 0) {
+            error = "All fields are required";
         } else if (userService.isRegistered(user.getUserName())) {
             error = "Login is already registered";
         }
         if (error.length()!=0){
-            model.addAttribute("error", error);
-            return "Registration";
+            redirectAttributes.addFlashAttribute("error", error);
+            return "redirect:/registration";
         }
         else {
             user.setTkn(generateRandomString(60));
@@ -97,6 +101,7 @@ public class UserController {
             return "redirect:/login";
         }
     }
+
 
 
     @RequestMapping(value = "/service/success", method = RequestMethod.GET)
@@ -168,7 +173,7 @@ public class UserController {
         status.setComplete();
         return "redirect:/login";
     }
-    
+
     public String generateRandomString(int length) {
         String chars = "abcdefghijklmnpqrstuvwxyzABCDEFGHIJKLMNPQRSTUVWXYZ1234567890";
         StringBuilder sb = new StringBuilder();

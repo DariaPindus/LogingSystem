@@ -1,6 +1,7 @@
 package com.daria.sprimg.mvc.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -12,6 +13,7 @@ public class User {
     @GeneratedValue
     private int id;
    // @Size(min = 2, max = 20, message = "name must be between 2 and 20 symbols")
+
     private String userName;
     private String password;
     private String tkn;

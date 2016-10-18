@@ -1,0 +1,12 @@
+com/daria/sprimg/mvc/service/UserService.class
+com/daria/sprimg/mvc/service/AddressService.class
+com/daria/sprimg/mvc/model/Address.class
+com/daria/sprimg/mvc/repository/AddressRepository.class
+com/daria/sprimg/mvc/filter/SessionStorage.class
+com/daria/sprimg/mvc/validator/UserValidator.class
+com/daria/sprimg/mvc/repository/UserRepository.class
+com/daria/sprimg/mvc/model/User.class
+com/daria/sprimg/mvc/filter/MySessionListener.class
+com/daria/sprimg/mvc/filter/AuthFilter.class
+com/daria/sprimg/mvc/controller/UserController.class
+com/daria/sprimg/mvc/controller/NewController.class

@@ -1,0 +1,12 @@
+/home/daria_p/MyDocs/JavaProgs/Spring/LoginSys/src/main/java/com/daria/sprimg/mvc/model/User.java
+/home/daria_p/MyDocs/JavaProgs/Spring/LoginSys/src/main/java/com/daria/sprimg/mvc/validator/UserValidator.java
+/home/daria_p/MyDocs/JavaProgs/Spring/LoginSys/src/main/java/com/daria/sprimg/mvc/repository/AddressRepository.java
+/home/daria_p/MyDocs/JavaProgs/Spring/LoginSys/src/main/java/com/daria/sprimg/mvc/filter/MySessionListener.java
+/home/daria_p/MyDocs/JavaProgs/Spring/LoginSys/src/main/java/com/daria/sprimg/mvc/controller/NewController.java
+/home/daria_p/MyDocs/JavaProgs/Spring/LoginSys/src/main/java/com/daria/sprimg/mvc/controller/UserController.java
+/home/daria_p/MyDocs/JavaProgs/Spring/LoginSys/src/main/java/com/daria/sprimg/mvc/service/UserService.java
+/home/daria_p/MyDocs/JavaProgs/Spring/LoginSys/src/main/java/com/daria/sprimg/mvc/model/Address.java
+/home/daria_p/MyDocs/JavaProgs/Spring/LoginSys/src/main/java/com/daria/sprimg/mvc/repository/UserRepository.java
+/home/daria_p/MyDocs/JavaProgs/Spring/LoginSys/src/main/java/com/daria/sprimg/mvc/service/AddressService.java
+/home/daria_p/MyDocs/JavaProgs/Spring/LoginSys/src/main/java/com/daria/sprimg/mvc/filter/AuthFilter.java
+/home/daria_p/MyDocs/JavaProgs/Spring/LoginSys/src/main/java/com/daria/sprimg/mvc/filter/SessionStorage.java
