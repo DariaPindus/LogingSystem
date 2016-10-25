@@ -1,26 +1,62 @@
 package com.daria.sprimg.mvc.controller;
 
 import com.daria.sprimg.mvc.filter.AuthFilter;
+import com.daria.sprimg.mvc.model.Temperature;
 import com.daria.sprimg.mvc.model.User;
 import com.daria.sprimg.mvc.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import javax.servlet.http.*;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.*;
 
 @Controller
+@RequestMapping("/")
 @SessionAttributes("user")
+@EnableScheduling
 public class UserController {
 
     @Autowired
     UserService userService;
+
+    public List<Temperature> getTemperatureList() throws IOException {
+        String url = "https://www.gismeteo.ua/ua/weather-odessa-4982/";
+        List<Temperature> temps = new ArrayList<>();
+
+        try {
+            Document doc = Jsoup.connect(url).get();
+
+            Element table = doc.select("#tbwdaily1").get(0);
+            Elements rows = table.select("tr");
+
+            for (Element row : rows) {
+                String head = row.select("th").text();
+                Elements spans = row.select("span");
+                String cels = spans.get(0).text();
+                String fars = spans.get(1).text();
+                temps.add(new Temperature(head, Integer.parseInt(cels), Integer.parseInt(fars)));
+            }
+
+            for (Temperature temp : temps) {
+                System.out.println("Daytime = " + temp.getDayTime() + " C : " + temp.getCelsius() + " F: " + temp.getFahrenheit());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return temps;
+    }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String getLoginForm(HttpServletRequest request, @CookieValue(value = "tkn", defaultValue = "0") String cookieValue,
@@ -38,6 +74,13 @@ public class UserController {
             return "redirect:/service/success";
         }
 
+        try {
+            List<Temperature> temps = getTemperatureList();
+
+            model.addAttribute("tempList", temps);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         model.addAttribute("user", new User());
         return "Login";
     }
@@ -103,7 +146,6 @@ public class UserController {
     }
 
 
-
     @RequestMapping(value = "/service/success", method = RequestMethod.GET)
     public String success(@ModelAttribute("user") User user, @CookieValue(value = "tkn", defaultValue = "0000") String cookieValue,
                           HttpServletResponse res, Model model) {
@@ -120,6 +162,8 @@ public class UserController {
             userService.updateUser(user);
         }
     }
+
+
 
     public List<String> countries() {
         List<String> countries = new ArrayList<String>();
@@ -181,5 +225,9 @@ public class UserController {
             sb.append(chars.charAt((int) (Math.random() * chars.length())));
         }
         return sb.toString();
+    }
+
+    public void scheduledTask(){
+        System.out.println("Simple scheduled example");
     }
 }
